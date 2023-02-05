@@ -47,11 +47,11 @@ extension ImagesListViewController {
         guard let image = UIImage(named: photosName[indexPath.row]) else {
             return
         }
-        cell.pictureView.image = image
-        cell.labelView.text = dateFormatter.string(from: Date())
+        cell.pictureImageView.image = image
+        cell.dateLabel.text = dateFormatter.string(from: Date())
         let isLiked = indexPath.row % 2 == 0
-        let likeImage = isLiked ? UIImage(named: "nonActiveLike") : UIImage(named: "activeLike")
-        cell.likeButtonView.setImage(likeImage, for: .normal)
+        let likeImage = isLiked ? UIImage(named: "activeLike") : UIImage(named: "nonActiveLike")
+        cell.likeButton.setImage(likeImage, for: .normal)
     }
 }
 
