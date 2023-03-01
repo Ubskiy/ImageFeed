@@ -8,11 +8,108 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-    @IBOutlet var avatarImageView: UIImageView!
-    @IBOutlet var nameLabel: UILabel!
-    @IBOutlet var linkLabel: UILabel!
-    @IBOutlet var descriptionLabel: UILabel!
-    @IBOutlet var logoutButton: UIButton!
-    @IBAction func logoutButtonDidTap(_ sender: Any) {
+    private var nameLabel: UILabel?
+    private var tagLabel: UILabel?
+    private var decriptionLabel: UILabel?
+    
+    
+    override func viewDidLoad(){
+        super.viewDidLoad()
+        //Верстка кодом
+        let profileImage = UIImage(named: "UserPicture")
+        let imageView = UIImageView(image: profileImage)
+        configImage(imageView: imageView)
+        
+        let button = UIButton.systemButton(
+                    with: UIImage(named: "ExitButton")!,
+                    target: self,
+                    action: #selector(Self.didTapLogoutButton)
+                )
+        configButton(button: button, imageView: imageView)
+        
+        let nameLabel = UILabel()
+        configNameLabel(nameLabel: nameLabel, imageView: imageView)
+        
+        let tagLabel = UILabel()
+        configTagLabel(tagLabel: tagLabel,imageView: imageView ,nameLabel: nameLabel)
+        
+        let descriptionLabel = UILabel()
+        configDescriptionLabel(descriptionLabel: descriptionLabel,imageView: imageView,tagLabel: tagLabel)
+        
+        self.nameLabel = nameLabel
+        self.tagLabel = tagLabel
+        self.decriptionLabel = descriptionLabel
     }
+    
+    private func configImage(imageView: UIImageView){
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(imageView)
+        imageView.layer.cornerRadius = 61
+        imageView.backgroundColor = .ypBlack
+        NSLayoutConstraint.activate([
+        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+        imageView.widthAnchor.constraint(equalToConstant: 70),
+        imageView.heightAnchor.constraint(equalToConstant: 70)
+        ])
+    }
+    
+    private func configButton(button: UIButton, imageView: UIImageView){
+        button.tintColor = .ypRed
+        button.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(button)
+        
+        NSLayoutConstraint.activate([
+            button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
+            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -26),
+            button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
+        ])
+    }
+    
+    private func configNameLabel(nameLabel: UILabel, imageView: UIImageView){
+        nameLabel.text = "Екатерина Новикова"
+        nameLabel.font = UIFont(name: "SFProDisplay-Bold", size: 23)
+        nameLabel.textColor = .ypWhite
+        nameLabel.backgroundColor = .ypBlack
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(nameLabel)
+        
+        NSLayoutConstraint.activate([
+            nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
+            nameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            nameLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 124)
+        ])
+    }
+    private func configTagLabel(tagLabel: UILabel, imageView: UIImageView, nameLabel: UILabel){
+        tagLabel.text = "@ekaterina_nov"
+        tagLabel.font = UIFont(name: "YandexSansText-Regular", size: 13)
+        tagLabel.textColor = .ypGray
+        tagLabel.backgroundColor = .ypBlack
+        tagLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tagLabel)
+        
+        NSLayoutConstraint.activate([
+            tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+            tagLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            tagLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 260)
+        ])
+    }
+    
+    private func configDescriptionLabel(descriptionLabel: UILabel, imageView: UIImageView, tagLabel: UILabel){
+        descriptionLabel.text = "Hello, world!"
+        descriptionLabel.font = UIFont(name: "YandexSansText-Regular", size: 13)
+        descriptionLabel.textColor = .ypWhite
+        descriptionLabel.backgroundColor = .ypBlack
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(descriptionLabel)
+        
+        NSLayoutConstraint.activate([
+            descriptionLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8),
+            descriptionLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            descriptionLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 282)
+        ])
+    }
+    
+    @objc
+    private func didTapLogoutButton(){}
 }

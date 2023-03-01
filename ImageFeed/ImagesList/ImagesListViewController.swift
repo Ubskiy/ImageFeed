@@ -27,16 +27,24 @@ class ImagesListViewController: UIViewController, UITableViewDataSource {
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.ypBlack
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        
+        for family: String in UIFont.familyNames
+                {
+                    print(family)
+                    for names: String in UIFont.fontNames(forFamilyName: family)
+                    {
+                        print("== \(names)")
+                    }
+                }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == ShowSingleImageSegueIdentifier { // 1
             let viewController = segue.destination as! SingleImageViewController // 2
             let indexPath = sender as! IndexPath // 3
-            let image = UIImage(named: photosName[indexPath.row]) // 4
-            _ = viewController.view // CRASH FIXED !?
-            viewController.singleImageView.image = image // 5
-            
+            let imageName = photosName[indexPath.row]
+            let image = UIImage(named: "\(imageName)_full_size") ?? UIImage(named: imageName)
+            viewController.image = image // 5
         } else {
             super.prepare(for: segue, sender: sender) // 6
         }

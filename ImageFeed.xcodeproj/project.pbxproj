@@ -19,9 +19,9 @@
 		B8C734D029895C2F008E8148 /* YS Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8C734CE29895C2F008E8148 /* YS Display-Medium.ttf */; };
 		B8C734D229895CD7008E8148 /* YandexSansText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8C734D129895CD7008E8148 /* YandexSansText-Regular.ttf */; };
 		B8C734F529928CCD008E8148 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C734F429928CCD008E8148 /* ProfileViewController.swift */; };
-		B8C734F729929E76008E8148 /* SFProRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8C734F629929E76008E8148 /* SFProRegular.ttf */; };
-		B8C734F929929F49008E8148 /* SFProBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8C734F829929F49008E8148 /* SFProBold.ttf */; };
 		B8C734FB29967439008E8148 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C734FA29967439008E8148 /* SingleImageViewController.swift */; };
+		B8C7352429B00B55008E8148 /* SFProBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8C7352229B00B54008E8148 /* SFProBold.ttf */; };
+		B8C7352529B00B55008E8148 /* SFProRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8C7352329B00B55008E8148 /* SFProRegular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,9 +39,9 @@
 		B8C734CE29895C2F008E8148 /* YS Display-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Medium.ttf"; sourceTree = "<group>"; };
 		B8C734D129895CD7008E8148 /* YandexSansText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YandexSansText-Regular.ttf"; sourceTree = "<group>"; };
 		B8C734F429928CCD008E8148 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		B8C734F629929E76008E8148 /* SFProRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SFProRegular.ttf; sourceTree = "<group>"; };
-		B8C734F829929F49008E8148 /* SFProBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SFProBold.ttf; sourceTree = "<group>"; };
 		B8C734FA29967439008E8148 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
+		B8C7352229B00B54008E8148 /* SFProBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SFProBold.ttf; sourceTree = "<group>"; };
+		B8C7352329B00B55008E8148 /* SFProRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SFProRegular.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,8 +109,8 @@
 		B8C734CC29895C17008E8148 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B8C734F829929F49008E8148 /* SFProBold.ttf */,
-				B8C734F629929E76008E8148 /* SFProRegular.ttf */,
+				B8C7352229B00B54008E8148 /* SFProBold.ttf */,
+				B8C7352329B00B55008E8148 /* SFProRegular.ttf */,
 				B8C734D129895CD7008E8148 /* YandexSansText-Regular.ttf */,
 				B8C734CD29895C2F008E8148 /* YS Display-Bold.ttf */,
 				B8C734CE29895C2F008E8148 /* YS Display-Medium.ttf */,
@@ -184,10 +184,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8C7352529B00B55008E8148 /* SFProRegular.ttf in Resources */,
+				B8C7352429B00B55008E8148 /* SFProBold.ttf in Resources */,
 				B8C7349F2987D994008E8148 /* LaunchScreen.storyboard in Resources */,
 				B8C7349C2987D994008E8148 /* Assets.xcassets in Resources */,
-				B8C734F929929F49008E8148 /* SFProBold.ttf in Resources */,
-				B8C734F729929E76008E8148 /* SFProRegular.ttf in Resources */,
 				B8C7349A2987D992008E8148 /* Main.storyboard in Resources */,
 				B8C734CF29895C2F008E8148 /* YS Display-Bold.ttf in Resources */,
 				B8C734D229895CD7008E8148 /* YandexSansText-Regular.ttf in Resources */,
