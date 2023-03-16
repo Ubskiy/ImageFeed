@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController, UITableViewDataSource {
+final class ImagesListViewController: UIViewController, UITableViewDataSource {
     
     //MARK - Outlets
     @IBOutlet private var tableView: UITableView!
@@ -27,15 +27,6 @@ class ImagesListViewController: UIViewController, UITableViewDataSource {
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.ypBlack
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-        
-        for family: String in UIFont.familyNames
-                {
-                    print(family)
-                    for names: String in UIFont.fontNames(forFamilyName: family)
-                    {
-                        print("== \(names)")
-                    }
-                }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -78,7 +69,6 @@ extension ImagesListViewController {
 }
 
 extension ImagesListViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: ShowSingleImageSegueIdentifier, sender: indexPath)
     }

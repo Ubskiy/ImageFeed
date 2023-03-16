@@ -36,6 +36,25 @@ final class ProfileViewController: UIViewController {
         let descriptionLabel = UILabel()
         configDescriptionLabel(descriptionLabel: descriptionLabel,imageView: imageView,tagLabel: tagLabel)
         
+        NSLayoutConstraint.activate([
+        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+        imageView.widthAnchor.constraint(equalToConstant: 70),
+        imageView.heightAnchor.constraint(equalToConstant: 70),
+        button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
+        button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -26),
+        button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
+        nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
+        nameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+        nameLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 124),
+        tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+        tagLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+        tagLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 260),
+        descriptionLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8),
+        descriptionLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+        descriptionLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 282)
+        ])
+        
         self.nameLabel = nameLabel
         self.tagLabel = tagLabel
         self.decriptionLabel = descriptionLabel
@@ -46,24 +65,12 @@ final class ProfileViewController: UIViewController {
         view.addSubview(imageView)
         imageView.layer.cornerRadius = 61
         imageView.backgroundColor = .ypBlack
-        NSLayoutConstraint.activate([
-        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-        imageView.widthAnchor.constraint(equalToConstant: 70),
-        imageView.heightAnchor.constraint(equalToConstant: 70)
-        ])
     }
     
     private func configButton(button: UIButton, imageView: UIImageView){
         button.tintColor = .ypRed
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
-        
-        NSLayoutConstraint.activate([
-            button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
-            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -26),
-            button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
-        ])
     }
     
     private func configNameLabel(nameLabel: UILabel, imageView: UIImageView){
@@ -73,13 +80,8 @@ final class ProfileViewController: UIViewController {
         nameLabel.backgroundColor = .ypBlack
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)
-        
-        NSLayoutConstraint.activate([
-            nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
-            nameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
-            nameLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 124)
-        ])
     }
+    
     private func configTagLabel(tagLabel: UILabel, imageView: UIImageView, nameLabel: UILabel){
         tagLabel.text = "@ekaterina_nov"
         tagLabel.font = UIFont(name: "YandexSansText-Regular", size: 13)
@@ -87,12 +89,6 @@ final class ProfileViewController: UIViewController {
         tagLabel.backgroundColor = .ypBlack
         tagLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tagLabel)
-        
-        NSLayoutConstraint.activate([
-            tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-            tagLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
-            tagLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 260)
-        ])
     }
     
     private func configDescriptionLabel(descriptionLabel: UILabel, imageView: UIImageView, tagLabel: UILabel){
@@ -102,12 +98,6 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.backgroundColor = .ypBlack
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
-        
-        NSLayoutConstraint.activate([
-            descriptionLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8),
-            descriptionLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
-            descriptionLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 282)
-        ])
     }
     
     @objc
