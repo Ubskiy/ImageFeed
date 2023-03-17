@@ -6,7 +6,7 @@
 //
 
 import Foundation
-class OAuth2TokenStorage{
+final class OAuth2TokenStorage{
     private let key = "authToken"
     private let userDefaults = UserDefaults.standard //переменная для работы с userDefaults
     private (set) var token: String? {
@@ -18,10 +18,11 @@ class OAuth2TokenStorage{
                 userDefaults.set(newValue, forKey: key)
     } }
     
-    init(_ n: String?)
+    init(_ newValue: String?)
     {
-        token = n
+        token = newValue
     }
+    
     init()
     {
         self.token = token

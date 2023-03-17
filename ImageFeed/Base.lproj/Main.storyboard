@@ -18,7 +18,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="FeQ-GW-Fzw">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarViewController" id="61V-h6-1xY" sceneMemberID="viewController">
+                <tabBarController id="61V-h6-1xY" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="f0x-2d-RvT">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -149,14 +149,14 @@
             <objects>
                 <viewController id="lbq-tL-FEk" userLabel="Authorization" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Lb2-99-Wm3">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="838"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AuthImage" translatesAutoresizingMaskIntoConstraints="NO" id="B1t-T1-wOY">
-                                <rect key="frame" x="177" y="417" width="60" height="60"/>
+                                <rect key="frame" x="177" y="447" width="60" height="60"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uMg-Cq-dES" userLabel="AuthButton">
-                                <rect key="frame" x="35.5" y="666" width="343" height="48"/>
+                                <rect key="frame" x="35.5" y="724" width="343" height="48"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="343" id="Cvi-Pt-U3Q"/>
@@ -172,7 +172,7 @@
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <segue destination="0bw-i0-9nJ" kind="presentation" identifier="ShowWebView" modalPresentationStyle="fullScreen" id="J0K-8Y-3ko"/>
+                                    <segue destination="0bw-i0-9nJ" kind="presentation" identifier="ShowWebView" modalPresentationStyle="overFullScreen" id="J0K-8Y-3ko"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -361,17 +361,17 @@
                         <viewLayoutGuide key="safeArea" id="NNf-is-D1R"/>
                         <color key="backgroundColor" name="ypBlack"/>
                         <constraints>
-                            <constraint firstItem="TEI-Zl-91b" firstAttribute="centerY" secondItem="gmZ-kS-YPj" secondAttribute="centerY" id="YXW-Bt-UQR"/>
-                            <constraint firstItem="TEI-Zl-91b" firstAttribute="centerX" secondItem="gmZ-kS-YPj" secondAttribute="centerX" id="s5q-W6-a5S"/>
+                            <constraint firstItem="TEI-Zl-91b" firstAttribute="centerY" secondItem="gmZ-kS-YPj" secondAttribute="centerY" id="BJe-TL-oke"/>
+                            <constraint firstItem="TEI-Zl-91b" firstAttribute="centerX" secondItem="gmZ-kS-YPj" secondAttribute="centerX" id="Joy-K2-D5t"/>
                         </constraints>
                     </view>
                     <connections>
-                        <segue destination="Qm2-0s-onE" kind="presentation" identifier="ShowAuthenticationScreen" id="JYK-nF-7zb"/>
+                        <segue destination="Qm2-0s-onE" kind="presentation" identifier="ShowAuthenticationScreen" modalPresentationStyle="fullScreen" id="JYK-nF-7zb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yBI-gp-FSv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1383" y="-569"/>
+            <point key="canvasLocation" x="-1659" y="-615"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="r4u-CU-mxN">
@@ -379,7 +379,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Qm2-0s-onE" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="FXQ-um-9mc">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
+                        <rect key="frame" x="0.0" y="48" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

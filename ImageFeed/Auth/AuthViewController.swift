@@ -8,17 +8,17 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     // MARK: - OAuth2Service
-    private let oAuth2Service: OAuth2Service = OAuth2Service() //приватная сервиса авторизации
+    private let oAuth2Service: OAuth2Service = OAuth2Service.shared //приватная сервиса авторизации
     
-    let ShowWebViewSegueIdentifier = "ShowWebView"
+    static private let showWebViewSegueIdentifier = "ShowWebView"
     
     weak var delegate: AuthViewControllerDelegate?
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == ShowWebViewSegueIdentifier {
+        if segue.identifier == AuthViewController.showWebViewSegueIdentifier {
             guard
                 let webViewViewController = segue.destination as? WebViewViewController
-            else { fatalError("Failed to prepare for \(ShowWebViewSegueIdentifier)") }
+            else { fatalError("Failed to prepare for \(AuthViewController.showWebViewSegueIdentifier)") }
             webViewViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
