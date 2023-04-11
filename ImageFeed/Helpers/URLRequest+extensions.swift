@@ -23,7 +23,8 @@ extension URLRequest {
              queryItems: [URLQueryItem],
              baseURL: URL
      ) -> URLRequest {
-         var urlComponent = URLComponents(url: URL(string: path, relativeTo: baseURL)!,     resolvingAgainstBaseURL: true)!
+         guard let url = URL(string: path, relativeTo: baseURL) else {return URLRequest(url:baseURL)}
+         var urlComponent = URLComponents(url: url, resolvingAgainstBaseURL: true)!
          urlComponent.queryItems = queryItems
          return URLRequest(url: urlComponent.url!)
      }

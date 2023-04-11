@@ -5,7 +5,7 @@
 //  Created by Арсений Убский on 11.04.2023.
 //
 import UIKit
- 
+
 final class TabBarController: UITabBarController {
     override func awakeFromNib() {
         super.awakeFromNib()

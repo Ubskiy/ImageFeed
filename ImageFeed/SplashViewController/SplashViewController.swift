@@ -34,7 +34,7 @@ final class SplashViewController: UIViewController {
             logoImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
         ])
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if let token = oauth2TokenStorage.token {
@@ -43,19 +43,22 @@ final class SplashViewController: UIViewController {
             showAuthViewController()
         }
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
     }
     
     private func showAuthViewController() {
-        let authViewController: AuthViewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "AuthViewController") as! AuthViewController
+        guard let authViewController: AuthViewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController
+        else {
+            return
+        }
         authViewController.delegate = self
         authViewController.modalPresentationStyle = .fullScreen
         present(authViewController, animated: true, completion: nil)
     }
-
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
@@ -99,19 +102,19 @@ extension SplashViewController: AuthViewControllerDelegate {
             guard let self = self else {
                 return
             }
-                switch result {
-                case .success(let token):
-                    oauth2TokenStorage.token = token
-                    self.fetchProfileAndSwitchScreen(token: token)
-                    UIBlockingProgressHUD.dismiss()
-                case .failure(let error):
-                    debugPrint(error.localizedDescription)
-                    UIBlockingProgressHUD.dismiss()
-                    SplashViewController.showNetworkErrorAlert(self.presentedViewController ?? self)
-                    break
-                }
+            switch result {
+            case .success(let token):
+                self.oauth2TokenStorage.token = token
+                self.fetchProfileAndSwitchScreen(token: token)
+                UIBlockingProgressHUD.dismiss()
+            case .failure(let error):
+                debugPrint(error.localizedDescription)
+                UIBlockingProgressHUD.dismiss()
+                SplashViewController.showNetworkErrorAlert(self.presentedViewController ?? self)
+                break
             }
         }
+    }
     
     private func fetchProfileAndSwitchScreen(token: String) {
         profileService.fetchProfile(token) { [weak self] result in
@@ -132,13 +135,13 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
     
     private static func showNetworkErrorAlert(_ vc: UIViewController) {
-             let alert = UIAlertController(title: "Что-то пошло не так(",
-                                           message: "Не удалось войти в систему",
-                                           preferredStyle: .alert)
-             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-             vc.present(alert, animated: true, completion: nil)
-         }
+        let alert = UIAlertController(title: "Что-то пошло не так(",
+                                      message: "Не удалось войти в систему",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        vc.present(alert, animated: true, completion: nil)
+    }
 }
-    
-   
+
+
 

@@ -12,9 +12,9 @@ final class OAuth2Service {
     private var lastCode: String?
     private var task: URLSessionTask?
     private enum State {
-         case idle
-         case inProgress(code: String, task: URLSessionDataTask)
-     }
+        case idle
+        case inProgress(code: String, task: URLSessionDataTask)
+    }
     private var state: State = .idle
     private (set) var authToken: String? {
         get {
@@ -25,24 +25,23 @@ final class OAuth2Service {
         }
     }
     
-    private init() {}
-    
     func fetchOAuthToken(
         _ code: String,
         completion: @escaping (Result<String, Error>) -> Void ){
             assert(Thread.isMainThread)
-                     if case let .inProgress(currentCode, currentTask) = state {
-                         if currentCode == code {
-                             return
-                         }
-                         currentTask.cancel()
-                     }
-                     let request = authTokenRequest(code: code)
-                     let task = URLSession.shared
+            if case let .inProgress(currentCode, currentTask) = state {
+                if currentCode == code {
+                    return
+                }
+                currentTask.cancel()
+            }
+            let request = authTokenRequest(code: code)
+            let task = URLSession.shared
                 .objectTask(request: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
                     DispatchQueue.main.async {
+                        guard let self = self else { return }
                         defer {
-                            self?.state = .idle
+                            self.state = .idle
                         }
                         switch result {
                         case let .success(authResponse):
@@ -52,8 +51,8 @@ final class OAuth2Service {
                         }
                     }
                 }
-                    state = .inProgress(code: code, task: task)
-                    task.resume()
+            state = .inProgress(code: code, task: task)
+            task.resume()
         }
     
     private func authTokenRequest(code: String) -> URLRequest {

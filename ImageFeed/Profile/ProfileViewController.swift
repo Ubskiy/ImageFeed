@@ -150,7 +150,7 @@ final class ProfileViewController: UIViewController {
          private static func getPersonImage() -> UIImage {
              let systemName = "person.crop.circle.fill"
              if #available(iOS 15.0, *) {
-                 let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite, .ypGray])
+                 let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite!, .ypGray!])
                  return UIImage(systemName: systemName, withConfiguration: config)!
              } else {
                  return UIImage(systemName: systemName)!
