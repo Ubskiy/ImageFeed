@@ -8,7 +8,7 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     // MARK: - OAuth2Service
-    private let oAuth2Service: OAuth2Service = OAuth2Service.shared //приватная сервиса авторизации
+    private let oAuth2Service: OAuth2Service = OAuth2Service.shared //синглтон сервиса авторизации
     
     static private let showWebViewSegueIdentifier = "ShowWebView"
     
@@ -29,7 +29,6 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         delegate?.authViewController(self, didAuthenticateWithCode: code)
-        
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {

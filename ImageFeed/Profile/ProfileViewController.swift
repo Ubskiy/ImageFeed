@@ -6,64 +6,117 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    private var nameLabel: UILabel?
-    private var tagLabel: UILabel?
-    private var decriptionLabel: UILabel?
+    private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
+    private var profileImageSize: CGFloat = 70
+    private let profileImageService = ProfileImageService.shared
     
+    private lazy var personImage: UIImageView = {
+             let personImage = UIImageView()
+             personImage.translatesAutoresizingMaskIntoConstraints = false
+             personImage.image = ProfileViewController.getPersonImage()
+             personImage.contentMode = .scaleAspectFit
+             personImage.layer.cornerRadius = profileImageSize / 2
+             personImage.clipsToBounds = true
+             return personImage
+         }()
+    
+    private lazy var nameLabel: UILabel = {
+        let nameLabel = UILabel()
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.font = UIFont(name: "SFProDisplay-Bold", size: 23)
+        nameLabel.textColor = .ypWhite
+        nameLabel.backgroundColor = .ypBlack
+        return nameLabel
+    }()
+    
+    private lazy var tagLabel: UILabel = {
+        let tagLabel = UILabel()
+        tagLabel.translatesAutoresizingMaskIntoConstraints = false
+        tagLabel.font = UIFont(name: "YandexSansText-Regular", size: 13)
+        tagLabel.textColor = .ypGray
+        tagLabel.backgroundColor = .ypBlack
+        return tagLabel
+    }()
+    
+    private lazy var descriptionLabel: UILabel = {
+        let descriptionLabel = UILabel()
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.font = UIFont(name: "YandexSansText-Regular", size: 13)
+        descriptionLabel.textColor = .ypWhite
+        descriptionLabel.backgroundColor = .ypBlack
+        return descriptionLabel
+    }()
+    
+    private func updateAvatar() {                                   // 8
+        if let avatarUrl = profileImageService.avatarURL,
+           let imageUrl = URL(string: avatarUrl) {
+            personImage.kf.indicatorType = .activity
+            personImage.kf.setImage(
+                with: imageUrl,
+                placeholder: personImage.image,
+                options: [.cacheSerializer(FormatIndicatedCacheSerializer.png), .cacheMemoryOnly])
+        }
+        }
     
     override func viewDidLoad(){
         super.viewDidLoad()
         //Верстка кодом
-        let profileImage = UIImage(named: "UserPicture")
-        let imageView = UIImageView(image: profileImage)
-        configImage(imageView: imageView)
+        configImage(imageView: personImage)
         
         let button = UIButton.systemButton(
                     with: UIImage(named: "ExitButton")!,
                     target: self,
                     action: #selector(Self.didTapLogoutButton)
                 )
-        configButton(button: button, imageView: imageView)
-        
-        let nameLabel = UILabel()
-        configNameLabel(nameLabel: nameLabel, imageView: imageView)
-        
-        let tagLabel = UILabel()
-        configTagLabel(tagLabel: tagLabel,imageView: imageView ,nameLabel: nameLabel)
-        
-        let descriptionLabel = UILabel()
-        configDescriptionLabel(descriptionLabel: descriptionLabel,imageView: imageView,tagLabel: tagLabel)
+        configButton(button: button, imageView: personImage)
+        configNameLabel(nameLabel: nameLabel, imageView: personImage)
+        configTagLabel(tagLabel: tagLabel,imageView: personImage ,nameLabel: nameLabel)
+        configDescriptionLabel(descriptionLabel: descriptionLabel,imageView: personImage,tagLabel: tagLabel)
+        view.backgroundColor = .ypBlack
         
         NSLayoutConstraint.activate([
-        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-        imageView.widthAnchor.constraint(equalToConstant: 70),
-        imageView.heightAnchor.constraint(equalToConstant: 70),
-        button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
+        personImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+        personImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+        personImage.widthAnchor.constraint(equalToConstant: 70),
+        personImage.heightAnchor.constraint(equalToConstant: 70),
+        button.centerYAnchor.constraint(equalTo: personImage.centerYAnchor),
         button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -26),
         button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
-        nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
-        nameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+        nameLabel.topAnchor.constraint(equalTo: personImage.bottomAnchor, constant: 8),
+        nameLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
         nameLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 124),
         tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-        tagLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+        tagLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
         tagLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 260),
         descriptionLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8),
-        descriptionLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+        descriptionLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
         descriptionLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 282)
         ])
         
-        self.nameLabel = nameLabel
-        self.tagLabel = tagLabel
-        self.decriptionLabel = descriptionLabel
+        guard let profile = profileService.profile else {
+            return
+        }
+        updateProfileDetails(profile: profile)
+        
+        profileImageServiceObserver = NotificationCenter.default    // 2
+                   .addObserver(
+                       forName: ProfileImageService.DidChangeNotification, // 3
+                       object: nil,                                        // 4
+                       queue: .main                                        // 5
+                   ) { [weak self] _ in
+                       guard let self = self else { return }
+                       self.updateAvatar()                                 // 6
+                   }
+               updateAvatar()                                              // 7
     }
     
     private func configImage(imageView: UIImageView){
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
-        imageView.layer.cornerRadius = 61
         imageView.backgroundColor = .ypBlack
     }
     
@@ -75,31 +128,37 @@ final class ProfileViewController: UIViewController {
     
     private func configNameLabel(nameLabel: UILabel, imageView: UIImageView){
         nameLabel.text = "Екатерина Новикова"
-        nameLabel.font = UIFont(name: "SFProDisplay-Bold", size: 23)
-        nameLabel.textColor = .ypWhite
-        nameLabel.backgroundColor = .ypBlack
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)
     }
     
     private func configTagLabel(tagLabel: UILabel, imageView: UIImageView, nameLabel: UILabel){
         tagLabel.text = "@ekaterina_nov"
-        tagLabel.font = UIFont(name: "YandexSansText-Regular", size: 13)
-        tagLabel.textColor = .ypGray
-        tagLabel.backgroundColor = .ypBlack
-        tagLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tagLabel)
     }
     
     private func configDescriptionLabel(descriptionLabel: UILabel, imageView: UIImageView, tagLabel: UILabel){
         descriptionLabel.text = "Hello, world!"
-        descriptionLabel.font = UIFont(name: "YandexSansText-Regular", size: 13)
-        descriptionLabel.textColor = .ypWhite
-        descriptionLabel.backgroundColor = .ypBlack
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
     }
     
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        tagLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+
+         private static func getPersonImage() -> UIImage {
+             let systemName = "person.crop.circle.fill"
+             if #available(iOS 15.0, *) {
+                 let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite, .ypGray])
+                 return UIImage(systemName: systemName, withConfiguration: config)!
+             } else {
+                 return UIImage(systemName: systemName)!
+             }
+         }
+    
     @objc
-    private func didTapLogoutButton(){}
+    private func didTapLogoutButton(){
+        OAuth2TokenStorage().token = nil
+    }
 }
