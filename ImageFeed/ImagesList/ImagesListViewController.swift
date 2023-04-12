@@ -11,7 +11,9 @@ final class ImagesListViewController: UIViewController, UITableViewDataSource {
     
     //MARK - Outlets
     @IBOutlet private var tableView: UITableView!
-    
+    private var storageToken = OAuth2TokenStorage()
+    private var imagesListService = ImagesListService()
+    private var service = ImagesListService()
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private lazy var dateFormatter: DateFormatter = {
@@ -27,6 +29,7 @@ final class ImagesListViewController: UIViewController, UITableViewDataSource {
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.ypBlack
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        service.fetchPhotosNextPage(storageToken.token!) { _ in}
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -52,6 +55,18 @@ final class ImagesListViewController: UIViewController, UITableViewDataSource {
         }
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
+    }
+    
+    func tableView(
+      _ tableView: UITableView,
+      willDisplay cell: UITableViewCell,
+      forRowAt indexPath: IndexPath
+    ) {
+        if indexPath.row + 1 == imagesListService.photos.count {
+            guard let token = storageToken.token else {return}
+            imagesListService.fetchPhotosNextPage(token) { _ in
+            }
+        }
     }
 }
 
