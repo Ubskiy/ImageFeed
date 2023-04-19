@@ -43,8 +43,12 @@ struct ImageUrlsResult: Decodable {
     
     enum CodingKeys: String, CodingKey {
         case thumbImageUrl = "thumb"
-        case largeImageUrl = "large"
+        case largeImageUrl = "full"
     }
+}
+
+struct LikePhotoResult: Decodable {
+    let photo: PhotoResult?
 }
 
 final class ImagesListService {
@@ -61,7 +65,12 @@ final class ImagesListService {
         self.photos = photos
     }
     
-    
+    func clean() {
+        photos = []
+        lastLoadedPage = nil
+        task?.cancel()
+        task = nil
+    }
     
     func fetchPhotosNextPage(_ token: String, completion: @escaping (Result<[Photo], Error>) -> Void) {
         assert(Thread.isMainThread)// Главный поток
@@ -118,5 +127,75 @@ final class ImagesListService {
                           thumbImageURL: photoResult.urls?.thumbImageUrl,
                           largeImageURL: photoResult.urls?.largeImageUrl,
                           isLiked: photoResult.isLiked ?? false)
+    }
+    
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        assert(Thread.isMainThread) //Главный поток
+        task?.cancel()
+        guard let token = storageToken.token else { return } //проверяем на наличие токена авторизации
+        var request: URLRequest?
+        if isLike {
+            request = deleteLikeRequest(token, photoId: photoId) // Если стоял лайк - убираем
+        } else {
+            request = postLikeRequest(token, photoId: photoId) // Если не было лайка - Ставим
+        }
+        // MARK - запрос в сеть
+        guard let request = request else { return }
+        let session = URLSession.shared
+        let task = session.objectTask(request: request) { [weak self] (result: Result<LikePhotoResult, Error>) in
+            guard let self = self else { return }
+            self.task = nil
+            switch result {
+            case .success(let photoResult):
+                let isLiked = photoResult.photo?.isLiked ?? false
+                if let index = self.photos.firstIndex(where: { $0.id == photoResult.photo?.id }) {
+                    let photo = self.photos[index]
+                    let newPhoto = Photo(
+                        id: photo.id,
+                        width: photo.width,
+                        height: photo.height,
+                        createdAt: photo.createdAt,
+                        welcomeDescription: photo.welcomeDescription,
+                        thumbImageURL: photo.thumbImageURL,
+                        largeImageURL: photo.largeImageURL,
+                        isLiked: isLiked
+                    )
+                    self.photos = self.photos.withReplaced(itemAt: index, newValue: newPhoto)
+                }
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        self.task = task
+        task.resume()
+    }
+    
+    private func postLikeRequest(_ token: String, photoId: String) -> URLRequest? {
+        var requestPost = URLRequest.makeHTTPRequest(
+            path: "photos/\(photoId)/like",
+            baseURL: URL(string: "\(Constants.api)")!,
+            httpMethod: .POST
+            )
+        requestPost.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return requestPost
+    }
+    
+    private func deleteLikeRequest(_ token: String, photoId: String) -> URLRequest? {
+        var requestDelete = URLRequest.makeHTTPRequest(
+            path: "photos/\(photoId)/like",
+            baseURL: URL(string: "\(Constants.api)")!,
+            httpMethod: .DELETE
+            )
+        requestDelete.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return requestDelete
+    }
+}
+
+extension Array { // extension для замены фотографии новой фотографии в методе changeLike
+    func withReplaced(itemAt: Int, newValue: Photo) -> [Photo] {
+        var photos = ImagesListService.shared.photos
+        photos.replaceSubrange(itemAt...itemAt, with: [newValue])
+        return photos
     }
 }
