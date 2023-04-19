@@ -92,6 +92,9 @@ extension ImagesListViewController {
         } else {
             cell.dateLabel.text = ""
         }
+        let isLiked = (imagesListService.photos[indexPath.row].isLiked == true)
+        let likeImage = isLiked ? UIImage(named: "activeLike") : UIImage(named: "nonActiveLike")
+        cell.likeButton.setImage(likeImage, for: .normal)
         cell.selectionStyle = .none
     }
 }

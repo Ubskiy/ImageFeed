@@ -118,7 +118,7 @@ final class ImagesListService {
     }
     
     private func convert(_ photoResult: PhotoResult) -> Photo {
-
+        print(photoResult.isLiked)
         return Photo.init(id: photoResult.id,
                           width: CGFloat(photoResult.width),
                           height: CGFloat(photoResult.height),
@@ -128,6 +128,7 @@ final class ImagesListService {
                           largeImageURL: photoResult.urls?.largeImageUrl,
                           isLiked: photoResult.isLiked ?? false)
     }
+    
     
     func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
         assert(Thread.isMainThread) //Главный поток
