@@ -15,6 +15,7 @@ final class ProfileViewController: UIViewController {
     private let profileImageService = ProfileImageService.shared
     private let webView = WebViewViewController()
     private let storageToken = OAuth2TokenStorage()
+    var animationLayers = Set<CALayer>()
     
     private lazy var personImage: UIImageView = {
              let personImage = UIImageView()
@@ -103,17 +104,17 @@ final class ProfileViewController: UIViewController {
             return
         }
         updateProfileDetails(profile: profile)
-        
-        profileImageServiceObserver = NotificationCenter.default    // 2
+                
+        profileImageServiceObserver = NotificationCenter.default
                    .addObserver(
-                       forName: ProfileImageService.DidChangeNotification, // 3
-                       object: nil,                                        // 4
-                       queue: .main                                        // 5
+                       forName: ProfileImageService.DidChangeNotification,
+                       object: nil,
+                       queue: .main
                    ) { [weak self] _ in
                        guard let self = self else { return }
-                       self.updateAvatar()                                 // 6
+                       self.updateAvatar()
                    }
-               updateAvatar()                                              // 7
+               updateAvatar()
     }
     
     private func configImage(imageView: UIImageView){
