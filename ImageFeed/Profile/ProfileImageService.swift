@@ -15,6 +15,10 @@ final class ProfileImageService {
              let small: String
          }
     
+    func clean() {
+        avatarURL = nil
+    }
+    
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
              guard let token = oauth2TokenStorage.token else {
                  assertionFailure("No token")

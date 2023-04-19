@@ -13,6 +13,8 @@ final class ProfileViewController: UIViewController {
     private var profileImageServiceObserver: NSObjectProtocol?
     private var profileImageSize: CGFloat = 70
     private let profileImageService = ProfileImageService.shared
+    private let webView = WebViewViewController()
+    private let storageToken = OAuth2TokenStorage()
     
     private lazy var personImage: UIImageView = {
              let personImage = UIImageView()
@@ -146,19 +148,47 @@ final class ProfileViewController: UIViewController {
         tagLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
     }
-
-         private static func getPersonImage() -> UIImage {
-             let systemName = "person.crop.circle.fill"
-             if #available(iOS 15.0, *) {
-                 let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite!, .ypGray!])
-                 return UIImage(systemName: systemName, withConfiguration: config)!
-             } else {
-                 return UIImage(systemName: systemName)!
-             }
-         }
+    
+    private static func getPersonImage() -> UIImage {
+        let systemName = "person.crop.circle.fill"
+        if #available(iOS 15.0, *) {
+            let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite!, .ypGray!])
+            return UIImage(systemName: systemName, withConfiguration: config)!
+        } else {
+            return UIImage(systemName: systemName)!
+        }
+    }
+    
+    private func logout() {
+        storageToken.deleteToken()
+        webView.removeUnsplashCookies()
+        cleanServices()
+        tabBarController?.dismiss(animated: true)
+        guard let window = UIApplication.shared.windows.first else {
+            fatalError("Invalid Configuration") }
+        window.rootViewController = SplashViewController()
+    }
+    
+    private func cleanServices() {
+        ImagesListService.shared.clean()
+        ProfileService.shared.clean()
+        ProfileImageService.shared.clean()
+    }
     
     @objc
     private func didTapLogoutButton(){
         OAuth2TokenStorage().token = nil
+        
+        let alert = UIAlertController(
+            title: "Выход из учетной записи",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] action in
+            guard let self = self else { return }
+            self.logout()
+        }))
+        alert.addAction(UIAlertAction(title: "Нет", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }

@@ -26,6 +26,9 @@ final class ProfileService {
         let bio: String?
     }
     
+    func clean() {
+        profile = nil
+    }
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         let request = createGetProfileRequest(accessToken: token)
