@@ -14,16 +14,16 @@ final class OAuth2TokenStorage {
 
     var token: String? {
         get {
-            KeychainWrapper.standard.string(forKey: key)
+            keychainStorage.string(forKey: key)
         }
         set {
             if let token = newValue {
-                guard KeychainWrapper.standard.set(token, forKey: key) else {
+                guard keychainStorage.set(token, forKey: key) else {
                     assertionFailure("Failed to save token")
                     return
                 }
             } else {
-                KeychainWrapper.standard.removeObject(forKey: key)
+                keychainStorage.removeObject(forKey: key)
             }
         }
     }
