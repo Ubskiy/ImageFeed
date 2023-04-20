@@ -41,6 +41,7 @@
 		B8C903B629E4B7C500E0C802 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = B8C903B529E4B7C500E0C802 /* SwiftKeychainWrapper */; };
 		B8CDE24829E6A4D70068F664 /* ImagesListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8CDE24729E6A4D70068F664 /* ImagesListService.swift */; };
 		B8CDE25029E759690068F664 /* ImagesListServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8CDE24F29E759690068F664 /* ImagesListServiceTests.swift */; };
+		B8CDE25929F13EF30068F664 /* Require extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8CDE25829F13EF30068F664 /* Require extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +89,7 @@
 		B8CDE24729E6A4D70068F664 /* ImagesListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListService.swift; sourceTree = "<group>"; };
 		B8CDE24D29E759690068F664 /* Image FeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Image FeedTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8CDE24F29E759690068F664 /* ImagesListServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListServiceTests.swift; sourceTree = "<group>"; };
+		B8CDE25829F13EF30068F664 /* Require extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Require extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +158,7 @@
 				B8C7349B2987D994008E8148 /* Assets.xcassets */,
 				B8C734A02987D994008E8148 /* Info.plist */,
 				B8C7357A29CCF197008E8148 /* UIBlockingProgressHUD.swift */,
+				B8CDE25829F13EF30068F664 /* Require extension.swift */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8C7356E29C51C60008E8148 /* AuthViewController.swift in Sources */,
+				B8CDE25929F13EF30068F664 /* Require extension.swift in Sources */,
 				B8C734F529928CCD008E8148 /* ProfileViewController.swift in Sources */,
 				B8C7358129D22832008E8148 /* URLSession+extensions.swift in Sources */,
 				B8C7357329C51C60008E8148 /* OAuth2TokenStorage.swift in Sources */,
