@@ -21,8 +21,8 @@ final class ProfileService {
     private struct ProfileResult: Decodable {
         let id: String
         let username: String
-        let first_name: String?
-        let last_name: String?
+        let firstname: String?
+        let lastname: String?
         let bio: String?
     }
     
@@ -57,7 +57,7 @@ final class ProfileService {
     private static func profileFactory(_ result: ProfileResult) -> Profile {
         Profile(
             username: result.username,
-            name: "\(result.first_name.orEmpty()) \(result.last_name.orEmpty())",
+            name: "\(result.firstname.orEmpty()) \(result.lastname.orEmpty())",
             loginName: "@\(result.username)",
             bio: result.bio.orEmpty()
         )

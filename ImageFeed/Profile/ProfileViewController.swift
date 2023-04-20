@@ -130,17 +130,14 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configNameLabel(nameLabel: UILabel, imageView: UIImageView){
-        nameLabel.text = "Екатерина Новикова"
         view.addSubview(nameLabel)
     }
     
     private func configTagLabel(tagLabel: UILabel, imageView: UIImageView, nameLabel: UILabel){
-        tagLabel.text = "@ekaterina_nov"
         view.addSubview(tagLabel)
     }
     
     private func configDescriptionLabel(descriptionLabel: UILabel, imageView: UIImageView, tagLabel: UILabel){
-        descriptionLabel.text = "Hello, world!"
         view.addSubview(descriptionLabel)
     }
     
@@ -153,7 +150,7 @@ final class ProfileViewController: UIViewController {
     private static func getPersonImage() -> UIImage {
         let systemName = "person.crop.circle.fill"
         if #available(iOS 15.0, *) {
-            let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite!, .ypGray!])
+            let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite, .ypGray])
             return UIImage(systemName: systemName, withConfiguration: config)!
         } else {
             return UIImage(systemName: systemName)!

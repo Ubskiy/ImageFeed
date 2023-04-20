@@ -74,9 +74,9 @@ final class ImagesListService {
     
     func fetchPhotosNextPage(_ token: String, completion: @escaping (Result<[Photo], Error>) -> Void) {
         assert(Thread.isMainThread)// Главный поток
-        guard task == nil else {return} // Проверяем существует ли текущий запрос
-        guard let token = storageToken.token else { return } // Проверяем наличие токена авторизации
-        let page = lastLoadedPage == nil ? 1 : lastLoadedPage! + 1 //Если 1-ая загруженная страница, то 1, иначе +1
+        guard task == nil, // Проверяем существует ли текущий запрос
+              let token = storageToken.token else { return } // Проверяем наличие токена авторизации
+        let page = lastLoadedPage.map { $0 + 1 } ?? 1 //Если 1-ая загруженная страница, то 1, иначе +1
         guard let request = fetchImagesListRequest(token, page: String(page), perPage: perPage) else {
             return
         }
@@ -86,16 +86,24 @@ final class ImagesListService {
                 switch result {
                 case let .success(photoResults):
                     for photoResult in photoResults {
+                        var noRepeatPhotos: Bool = true
                         let photoToAppend = self.convert(photoResult)
-                        self.photos.append(photoToAppend) // Добавление в конец массива photos
+                        for photo in self.photos {
+                            if photo.id == photoToAppend.id {
+                                noRepeatPhotos = false
+                            }
+                        }
+                        if noRepeatPhotos {
+                            self.photos.append(photoToAppend)
+                            self.lastLoadedPage = page
+                            NotificationCenter.default // постим нотификацию
+                                .post(
+                                    name: ImagesListService.DidChangeNotification,
+                                    object: self,
+                                    userInfo: ["Images" : self.photos])
+                            completion(.success(self.photos))
+                        }
                     }
-                    self.lastLoadedPage = page
-                    NotificationCenter.default // постим нотификацию
-                        .post(
-                            name: ImagesListService.DidChangeNotification,
-                            object: self,
-                            userInfo: ["Images" : self.photos])
-                    completion(.success(self.photos))
                 case let .failure(error):
                     print(String(describing: error))
                     completion(.failure(error))
@@ -112,13 +120,12 @@ final class ImagesListService {
             path: "/photos?page=\(page)&&per_page=\(perPage)",
             baseURL: URL(string: "\(Constants.api)")!,
             httpMethod: .GET
-            )
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        )
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
     }
     
     private func convert(_ photoResult: PhotoResult) -> Photo {
-        print(photoResult.isLiked)
         return Photo.init(id: photoResult.id,
                           width: CGFloat(photoResult.width),
                           height: CGFloat(photoResult.height),
@@ -134,12 +141,10 @@ final class ImagesListService {
         assert(Thread.isMainThread) //Главный поток
         task?.cancel()
         guard let token = storageToken.token else { return } //проверяем на наличие токена авторизации
-        var request: URLRequest?
-        if isLike {
-            request = deleteLikeRequest(token, photoId: photoId) // Если стоял лайк - убираем
-        } else {
-            request = postLikeRequest(token, photoId: photoId) // Если не было лайка - Ставим
-        }
+        let request: URLRequest? = isLike
+        ? deleteLikeRequest(token, photoId: photoId) // Если стоял лайк - убираем
+        : postLikeRequest(token, photoId: photoId) // Если не было лайка - Ставим
+        
         // MARK - запрос в сеть
         guard let request = request else { return }
         let session = URLSession.shared
@@ -175,9 +180,9 @@ final class ImagesListService {
     private func postLikeRequest(_ token: String, photoId: String) -> URLRequest? {
         var requestPost = URLRequest.makeHTTPRequest(
             path: "photos/\(photoId)/like",
-            baseURL: URL(string: "\(Constants.api)")!,
+            baseURL: Constants.api,
             httpMethod: .POST
-            )
+        )
         requestPost.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return requestPost
     }
@@ -185,9 +190,9 @@ final class ImagesListService {
     private func deleteLikeRequest(_ token: String, photoId: String) -> URLRequest? {
         var requestDelete = URLRequest.makeHTTPRequest(
             path: "photos/\(photoId)/like",
-            baseURL: URL(string: "\(Constants.api)")!,
+            baseURL: Constants.api,
             httpMethod: .DELETE
-            )
+        )
         requestDelete.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return requestDelete
     }
@@ -196,7 +201,7 @@ final class ImagesListService {
 extension Array { // extension для замены фотографии новой фотографии в методе changeLike
     func withReplaced(itemAt: Int, newValue: Photo) -> [Photo] {
         var photos = ImagesListService.shared.photos
-        photos.replaceSubrange(itemAt...itemAt, with: [newValue])
+        photos[itemAt] = newValue
         return photos
     }
 }
