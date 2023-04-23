@@ -118,7 +118,7 @@ final class ImagesListService {
     private func fetchImagesListRequest(_ token: String, page: String, perPage: String) -> URLRequest? {
         var request = URLRequest.makeHTTPRequest(
             path: "/photos?page=\(page)&&per_page=\(perPage)",
-            baseURL: URL(string: "\(Constants.api)")!,
+            baseURL: URL(string: "\(myApi)")!,
             httpMethod: .GET
         )
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -180,7 +180,7 @@ final class ImagesListService {
     private func postLikeRequest(_ token: String, photoId: String) -> URLRequest? {
         var requestPost = URLRequest.makeHTTPRequest(
             path: "photos/\(photoId)/like",
-            baseURL: Constants.api,
+            baseURL: myApi,
             httpMethod: .POST
         )
         requestPost.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -190,7 +190,7 @@ final class ImagesListService {
     private func deleteLikeRequest(_ token: String, photoId: String) -> URLRequest? {
         var requestDelete = URLRequest.makeHTTPRequest(
             path: "photos/\(photoId)/like",
-            baseURL: Constants.api,
+            baseURL: myApi,
             httpMethod: .DELETE
         )
         requestDelete.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

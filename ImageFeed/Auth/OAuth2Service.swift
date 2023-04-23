@@ -59,13 +59,13 @@ final class OAuth2Service {
         URLRequest.makeHTTPRequest(
             path: "/oauth/token",
             queryItems: [
-                URLQueryItem(name: "client_id", value: Constants.accessKey),
-                URLQueryItem(name: "client_secret", value: Constants.secretKey),
-                URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+                URLQueryItem(name: "client_id", value: myAccessKey),
+                URLQueryItem(name: "client_secret", value: mySecretKey),
+                URLQueryItem(name: "redirect_uri", value: myRedirectURI),
                 URLQueryItem(name: "code", value: code),
                 URLQueryItem(name: "grant_type", value: "authorization_code"),
             ],
-            baseURL: Constants.defaultBaseURL
+            baseURL: myDefaultBaseURL
         ) }
     
     private struct OAuthTokenResponseBody: Decodable{

@@ -159,7 +159,6 @@ final class ProfileViewController: UIViewController {
     
     private func logout() {
         storageToken.deleteToken()
-        webView.removeUnsplashCookies()
         cleanServices()
         tabBarController?.dismiss(animated: true)
         guard let window = UIApplication.shared.windows.first else {
@@ -178,7 +177,7 @@ final class ProfileViewController: UIViewController {
         OAuth2TokenStorage().token = nil
         
         let alert = UIAlertController(
-            title: "Выход из учетной записи",
+            title: "Пока, пока!",
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert
         )

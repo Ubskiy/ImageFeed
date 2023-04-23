@@ -49,7 +49,7 @@ final class ProfileService {
     }
     
     private func createGetProfileRequest(accessToken: String) -> URLRequest {
-        var request = URLRequest.makeHTTPRequest(path: "/me", baseURL: Constants.api)
+        var request = URLRequest.makeHTTPRequest(path: "/me", baseURL: myApi)
             request.addAuthorizationHeader(accessToken)
             return request
         }
