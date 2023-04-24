@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct Photo {
+public struct Photo {
     let id: String
     let width: CGFloat
     let height: CGFloat

@@ -7,12 +7,19 @@
 
 import UIKit
 
-final class ImagesListViewController: UIViewController {
+public protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListPresenterProtocol? { get set }
+    var photos: [Photo] { get set }
+    func showErrorLikeAlert(with error: Error)
+}
+
+final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
     //MARK - Outlets
     @IBOutlet private var tableView: UITableView!
     //MARK - var and lets
-    private var storageToken = OAuth2TokenStorage()
+    var presenter: ImagesListPresenterProtocol?
     private var imagesListService = ImagesListService.shared
+    private var storageToken = OAuth2TokenStorage()
     private var imagesListServiceObserver: NSObjectProtocol?
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
     var photos: [Photo] = []
@@ -25,7 +32,7 @@ final class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.ypBlack
@@ -66,7 +73,12 @@ final class ImagesListViewController: UIViewController {
         }
     }
     
-    private func showErrorLikeAlert(with error: Error) {
+    func configure(_ presenter: ImagesListPresenterProtocol) {
+        self.presenter = presenter
+        self.presenter?.view = self
+    }
+    
+    func showErrorLikeAlert(with error: Error) {
         let alert = UIAlertController(
             title: "Что-то пошло не так(",
             message: "Не удалось поставить лайк",
@@ -92,8 +104,7 @@ extension ImagesListViewController {
         } else {
             cell.dateLabel.text = ""
         }
-        let isLiked = (imagesListService.photos[indexPath.row].isLiked == true)
-        let likeImage = isLiked ? UIImage(named: "activeLike") : UIImage(named: "nonActiveLike")
+        let likeImage = presenter?.isLiked(indexPath: indexPath) ?? false ? UIImage(named: "activeLike") : UIImage(named: "nonActiveLike")
         cell.likeButton.setImage(likeImage, for: .normal)
         cell.selectionStyle = .none
     }
@@ -113,9 +124,9 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(
-      _ tableView: UITableView,
-      willDisplay cell: UITableViewCell,
-      forRowAt indexPath: IndexPath
+        _ tableView: UITableView,
+        willDisplay cell: UITableViewCell,
+        forRowAt indexPath: IndexPath
     ) {
         if indexPath.row + 1 == imagesListService.photos.count {
             guard let token = storageToken.token else {return}
@@ -146,21 +157,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
     
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let photo = photos[indexPath.row]
-        UIBlockingProgressHUD.show() // блокируем UI на время запроса
-        imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case.success:
-                    self.photos = self.imagesListService.photos
-                    cell.setIsLiked(isLiked: self.photos[indexPath.row].isLiked)
-                    UIBlockingProgressHUD.dismiss()
-                case.failure(let error):
-                    UIBlockingProgressHUD.dismiss()
-                    self.showErrorLikeAlert(with: error)
-                }
-            }
-        }
+        presenter?.imageListCellDidTapLike(cell, indexPath: indexPath)
     }
 }
 
