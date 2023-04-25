@@ -26,6 +26,9 @@ final class ProfileService {
         let bio: String?
     }
     
+    func clean() {
+        profile = nil
+    }
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         let request = createGetProfileRequest(accessToken: token)
@@ -46,7 +49,7 @@ final class ProfileService {
     }
     
     private func createGetProfileRequest(accessToken: String) -> URLRequest {
-        var request = URLRequest.makeHTTPRequest(path: "/me", baseURL: Constants.api)
+        var request = URLRequest.makeHTTPRequest(path: "/me", baseURL: myApi)
             request.addAuthorizationHeader(accessToken)
             return request
         }

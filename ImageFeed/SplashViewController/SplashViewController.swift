@@ -56,7 +56,7 @@ final class SplashViewController: UIViewController {
         }
         authViewController.delegate = self
         authViewController.modalPresentationStyle = .fullScreen
-        present(authViewController, animated: true, completion: nil)
+        self.present(authViewController, animated: true, completion: nil)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -123,18 +123,18 @@ extension SplashViewController: AuthViewControllerDelegate {
             case .success(let profile):
                 self.profileImageService.fetchProfileImageURL(username: profile.username) { _ in
                 }
-                UIBlockingProgressHUD.dismiss()
                 self.switchToTabBarController()
             case .failure(let error):
                 debugPrint(error.localizedDescription)
-                UIBlockingProgressHUD.dismiss()
-                SplashViewController.showNetworkErrorAlert(self)
-                break
+                SplashViewController.showNetworkErrorAlert(self.presentedViewController ?? self)
             }
+            UIBlockingProgressHUD.dismiss()
         }
     }
-    
-    private static func showNetworkErrorAlert(_ vc: UIViewController) {
+}
+
+extension UIViewController {
+    static func showNetworkErrorAlert(_ vc: UIViewController) {
         let alert = UIAlertController(title: "Что-то пошло не так(",
                                       message: "Не удалось войти в систему",
                                       preferredStyle: .alert)

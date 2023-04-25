@@ -15,6 +15,10 @@ final class ProfileImageService {
              let small: String
          }
     
+    func clean() {
+        avatarURL = nil
+    }
+    
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
              guard let token = oauth2TokenStorage.token else {
                  assertionFailure("No token")
@@ -43,7 +47,7 @@ final class ProfileImageService {
          }
     
     private func createGetProfileImageRequest(username: String, token: String) -> URLRequest {
-        var request = URLRequest.makeHTTPRequest(path: "/users/\(username)", baseURL: Constants.api)
+        var request = URLRequest.makeHTTPRequest(path: "/users/\(username)", baseURL: myApi)
              request.addAuthorizationHeader(token)
              return request
          }

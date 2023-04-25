@@ -8,21 +8,29 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
-    private let profileService = ProfileService.shared
+public protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    
+}
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
+    var presenter: ProfileViewPresenterProtocol? // презентер профиля
+    private let profileService = ProfileService.shared // синглтон
     private var profileImageServiceObserver: NSObjectProtocol?
     private var profileImageSize: CGFloat = 70
-    private let profileImageService = ProfileImageService.shared
+    private let profileImageService = ProfileImageService.shared // синглтон
+    private var storageToken = OAuth2TokenStorage()
+    var animationLayers = Set<CALayer>()
     
     private lazy var personImage: UIImageView = {
-             let personImage = UIImageView()
-             personImage.translatesAutoresizingMaskIntoConstraints = false
-             personImage.image = ProfileViewController.getPersonImage()
-             personImage.contentMode = .scaleAspectFit
-             personImage.layer.cornerRadius = profileImageSize / 2
-             personImage.clipsToBounds = true
-             return personImage
-         }()
+        let personImage = UIImageView()
+        personImage.translatesAutoresizingMaskIntoConstraints = false
+        personImage.image = ProfileViewController.getPersonImage()
+        personImage.contentMode = .scaleAspectFit
+        personImage.layer.cornerRadius = profileImageSize / 2
+        personImage.clipsToBounds = true
+        return personImage
+    }()
     
     private lazy var nameLabel: UILabel = {
         let nameLabel = UILabel()
@@ -51,7 +59,7 @@ final class ProfileViewController: UIViewController {
         return descriptionLabel
     }()
     
-    private func updateAvatar() {                                   // 8
+    private func updateAvatar() {                                   
         if let avatarUrl = profileImageService.avatarURL,
            let imageUrl = URL(string: avatarUrl) {
             personImage.kf.indicatorType = .activity
@@ -60,7 +68,7 @@ final class ProfileViewController: UIViewController {
                 placeholder: personImage.image,
                 options: [.cacheSerializer(FormatIndicatedCacheSerializer.png), .cacheMemoryOnly])
         }
-        }
+    }
     
     override func viewDidLoad(){
         super.viewDidLoad()
@@ -68,10 +76,10 @@ final class ProfileViewController: UIViewController {
         configImage(imageView: personImage)
         
         let button = UIButton.systemButton(
-                    with: UIImage(named: "ExitButton")!,
-                    target: self,
-                    action: #selector(Self.didTapLogoutButton)
-                )
+            with: UIImage(named: "ExitButton")!,
+            target: self,
+            action: #selector(Self.didTapLogoutButton)
+        )
         configButton(button: button, imageView: personImage)
         configNameLabel(nameLabel: nameLabel, imageView: personImage)
         configTagLabel(tagLabel: tagLabel,imageView: personImage ,nameLabel: nameLabel)
@@ -79,22 +87,22 @@ final class ProfileViewController: UIViewController {
         view.backgroundColor = .ypBlack
         
         NSLayoutConstraint.activate([
-        personImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-        personImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-        personImage.widthAnchor.constraint(equalToConstant: 70),
-        personImage.heightAnchor.constraint(equalToConstant: 70),
-        button.centerYAnchor.constraint(equalTo: personImage.centerYAnchor),
-        button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -26),
-        button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
-        nameLabel.topAnchor.constraint(equalTo: personImage.bottomAnchor, constant: 8),
-        nameLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
-        nameLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 124),
-        tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-        tagLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
-        tagLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 260),
-        descriptionLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8),
-        descriptionLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
-        descriptionLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 282)
+            personImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            personImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            personImage.widthAnchor.constraint(equalToConstant: 70),
+            personImage.heightAnchor.constraint(equalToConstant: 70),
+            button.centerYAnchor.constraint(equalTo: personImage.centerYAnchor),
+            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -26),
+            button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
+            nameLabel.topAnchor.constraint(equalTo: personImage.bottomAnchor, constant: 8),
+            nameLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
+            nameLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 124),
+            tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+            tagLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
+            tagLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 260),
+            descriptionLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8),
+            descriptionLabel.leadingAnchor.constraint(equalTo: personImage.leadingAnchor),
+            descriptionLabel.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: 282)
         ])
         
         guard let profile = profileService.profile else {
@@ -102,16 +110,16 @@ final class ProfileViewController: UIViewController {
         }
         updateProfileDetails(profile: profile)
         
-        profileImageServiceObserver = NotificationCenter.default    // 2
-                   .addObserver(
-                       forName: ProfileImageService.DidChangeNotification, // 3
-                       object: nil,                                        // 4
-                       queue: .main                                        // 5
-                   ) { [weak self] _ in
-                       guard let self = self else { return }
-                       self.updateAvatar()                                 // 6
-                   }
-               updateAvatar()                                              // 7
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.DidChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
     }
     
     private func configImage(imageView: UIImageView){
@@ -123,21 +131,22 @@ final class ProfileViewController: UIViewController {
     private func configButton(button: UIButton, imageView: UIImageView){
         button.tintColor = .ypRed
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.accessibilityIdentifier = "logoutButton"
         view.addSubview(button)
     }
     
     private func configNameLabel(nameLabel: UILabel, imageView: UIImageView){
-        nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = ""
         view.addSubview(nameLabel)
     }
     
     private func configTagLabel(tagLabel: UILabel, imageView: UIImageView, nameLabel: UILabel){
-        tagLabel.text = "@ekaterina_nov"
+        tagLabel.text = ""
         view.addSubview(tagLabel)
     }
     
     private func configDescriptionLabel(descriptionLabel: UILabel, imageView: UIImageView, tagLabel: UILabel){
-        descriptionLabel.text = "Hello, world!"
+        descriptionLabel.text = ""
         view.addSubview(descriptionLabel)
     }
     
@@ -146,19 +155,43 @@ final class ProfileViewController: UIViewController {
         tagLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
     }
-
-         private static func getPersonImage() -> UIImage {
-             let systemName = "person.crop.circle.fill"
-             if #available(iOS 15.0, *) {
-                 let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite!, .ypGray!])
-                 return UIImage(systemName: systemName, withConfiguration: config)!
-             } else {
-                 return UIImage(systemName: systemName)!
-             }
-         }
+    
+    func configure(_ presenter: ProfileViewPresenterProtocol) {
+        self.presenter = presenter
+        self.presenter?.view = self
+    }
+    
+    private static func getPersonImage() -> UIImage {
+        let systemName = "person.crop.circle.fill"
+        if #available(iOS 15.0, *) {
+            let config = UIImage.SymbolConfiguration(paletteColors: [.ypWhite, .ypGray])
+            return UIImage(systemName: systemName, withConfiguration: config)!
+        } else {
+            return UIImage(systemName: systemName)!
+        }
+    }
+    
+    private func logout() {
+        presenter?.logout()
+        tabBarController?.dismiss(animated: true)
+        guard let window = UIApplication.shared.windows.first else {
+            fatalError("Invalid Configuration") }
+        window.rootViewController = SplashViewController()
+    }
     
     @objc
     private func didTapLogoutButton(){
-        OAuth2TokenStorage().token = nil
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] action in
+            guard let self = self else { return }
+            self.logout()
+            storageToken.deleteToken()
+        }))
+        alert.addAction(UIAlertAction(title: "Нет", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }
