@@ -32,7 +32,8 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.presenter = ImagesListPresenter()
+        self.presenter?.view = self
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.ypBlack

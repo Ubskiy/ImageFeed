@@ -24,7 +24,6 @@ final class ImageFeedUITests: XCTestCase {
         XCTAssertTrue(webView.waitForExistence(timeout: 8))
         loginTextField.tap()
         loginTextField.typeText(login)
-        app.children(matching: .window).element(boundBy: 0).tap() //скрываем клавиатуру
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(webView.waitForExistence(timeout: 4))
