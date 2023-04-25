@@ -25,7 +25,6 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
                 switch result {
                 case.success:
                     self?.view?.photos = self?.imagesListService.photos ?? []
-                    print("AAA")
                     cell.setIsLiked(isLiked: self?.view?.photos[indexPath.row].isLiked ?? false)
                     UIBlockingProgressHUD.dismiss()
                 case.failure(let error):

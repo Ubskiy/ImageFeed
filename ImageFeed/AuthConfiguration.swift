@@ -12,8 +12,6 @@ extension URL: ExpressibleByStringLiteral { // extension чтобы избега
     }
 }
 
-
-
 let myAccessKey = "LtVXVKl614O1UDNGygCjiuFih-8r4rBQUinkIo_m8Ns"
 let mySecretKey = "dGXWJgOSjj6Ho0iyaZLxCGnEfvrWCKV3_79ojJ-6j_4"
 let myRedirectURI = "urn:ietf:wg:oauth:2.0:oob"
@@ -21,7 +19,6 @@ let myAccessScope = "public+read_user+write_likes"
 let myDefaultBaseURL: URL = "https://unsplash.com"
 let myApi: URL = "https://api.unsplash.com/"
 let myUnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-
 
 struct AuthConfiguration {
     let accessKey: String
