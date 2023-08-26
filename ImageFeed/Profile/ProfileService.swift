@@ -21,11 +21,14 @@ final class ProfileService {
     private struct ProfileResult: Decodable {
         let id: String
         let username: String
-        let first_name: String?
-        let last_name: String?
+        let firstname: String?
+        let lastname: String?
         let bio: String?
     }
     
+    func clean() {
+        profile = nil
+    }
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         let request = createGetProfileRequest(accessToken: token)
@@ -54,7 +57,7 @@ final class ProfileService {
     private static func profileFactory(_ result: ProfileResult) -> Profile {
         Profile(
             username: result.username,
-            name: "\(result.first_name.orEmpty()) \(result.last_name.orEmpty())",
+            name: "\(result.firstname.orEmpty()) \(result.lastname.orEmpty())",
             loginName: "@\(result.username)",
             bio: result.bio.orEmpty()
         )

@@ -52,7 +52,7 @@ final class WebViewViewController: UIViewController {
         webView.load(urlRequest)
     }
     
-    private func removeUnsplashCookies() {
+    func removeUnsplashCookies() {
         let dataStore = WKWebsiteDataStore.default()
         dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
             records.forEach { record in
